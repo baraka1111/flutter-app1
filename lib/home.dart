@@ -6,58 +6,36 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: Icon(Icons.menu),
-      //   title: Text(
-      //     "My App",
-      //     style: TextStyle(fontStyle: FontStyle.italic),
-      //   ),
-      //   backgroundColor: Colors.blue,
-      //   actions: <Widget>[
-      //     IconButton(onPressed: () {}, icon: Icon(Icons.search))
-      //   ],
-      // ),
-      body: ListView(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(Icons.person),
-              Text("My name"),
-              Text("My name"),
-              Text("My name"),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => TabScreen()));
-                  },
-                  child: Icon(Icons.edit)),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(Icons.person),
-              Text("My name"),
-              Text("My name"),
-              Text("My name"),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileInfoScreen()));
-                  },
-                  child: Icon(Icons.edit)),
-            ],
-          ),
-        ],
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: double.infinity,
+        color: Colors.blue,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            ClipOval(
+              child: Container(
+                height: 200,
+                width: 200,
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: Colors.grey),
+                child: Icon(
+                  Icons.abc,
+                  size: 50,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              "Welcome To My App",
+              style: TextStyle(fontSize: 25, color: Colors.white),
+            )
+          ],
+        ),
       ),
     );
   }
