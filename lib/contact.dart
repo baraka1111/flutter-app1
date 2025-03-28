@@ -229,47 +229,9 @@ class _ContactItem extends StatelessWidget {
   }
 }
 
-class _ContactImage extends StatefulWidget {
-  const _ContactImage({
-    Key? key,
-    required this.contact,
-  }) : super(key: key);
-
-  final Contact contact;
-
-  @override
-  __ContactImageState createState() => __ContactImageState();
-}
-
-class __ContactImageState extends State<_ContactImage> {
-  late Future<td.Uint8List?> _imageFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _imageFuture = FastContacts.getContactImage(widget.contact.id);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<td.Uint8List?>(
-      future: _imageFuture,
-      builder: (context, snapshot) => Container(
-        width: 56,
-        height: 56,
-        child: snapshot.hasData
-            ? Image.memory(snapshot.data!, gaplessPlayback: true)
-            : Icon(Icons.account_box_rounded),
-      ),
-    );
-  }
-}
-
 class _ContactDetailsPage extends StatefulWidget {
-  const _ContactDetailsPage({
-    Key? key,
-    required this.contactId,
-  }) : super(key: key);
+  const _ContactDetailsPage({Key? key, required this.contactId})
+      : super(key: key);
 
   final String contactId;
 
@@ -279,7 +241,6 @@ class _ContactDetailsPage extends StatefulWidget {
 
 class _ContactDetailsPageState extends State<_ContactDetailsPage> {
   late Future<Contact?> _contactFuture;
-
   Duration? _timeTaken;
 
   @override
@@ -295,46 +256,191 @@ class _ContactDetailsPageState extends State<_ContactDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Contact details: ${widget.contactId}'),
-      ),
+      appBar: AppBar(title: const Text('Contact Details'), centerTitle: true),
       body: FutureBuilder<Contact?>(
         future: _contactFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
-          final error = snapshot.error;
-          if (error != null) {
-            return Center(child: Text('Error: $error'));
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
-
           final contact = snapshot.data;
           if (contact == null) {
             return const Center(child: Text('Contact not found'));
           }
 
-          final contactJson =
-              JsonEncoder.withIndent('  ').convert(contact.toMap());
-
           return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ContactImage(contact: contact),
-                  const SizedBox(height: 16),
-                  if (_timeTaken != null)
-                    Text('Took: ${_timeTaken!.inMilliseconds}ms'),
-                  const SizedBox(height: 16),
-                  Text(contactJson),
-                ],
-              ),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Profile Image
+                _ContactImage(contact: contact),
+                const SizedBox(height: 16),
+
+                // Contact Name
+                Text(
+                  contact.displayName,
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+
+                // Contact Details (Phone, Email, etc.)
+                _ContactDetails(contact: contact),
+
+                // Action Buttons
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _ActionButton(
+                      icon: Icons.call,
+                      label: 'Call',
+                      color: Colors.green,
+                      onPressed: () {
+                        // Handle call action
+                      },
+                    ),
+                    const SizedBox(width: 16),
+                    _ActionButton(
+                      icon: Icons.message,
+                      label: 'Message',
+                      color: Colors.blue,
+                      onPressed: () {
+                        // Handle message action
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+// Profile Image Widget
+class _ContactImage extends StatefulWidget {
+  const _ContactImage({Key? key, required this.contact}) : super(key: key);
+
+  final Contact contact;
+
+  @override
+  State<_ContactImage> createState() => _ContactImageState();
+}
+
+class _ContactImageState extends State<_ContactImage> {
+  late Future<Uint8List?> _imageFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _imageFuture = FastContacts.getContactImage(widget.contact.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Uint8List?>(
+      future: _imageFuture,
+      builder: (context, snapshot) {
+        return CircleAvatar(
+          radius: 50,
+          backgroundColor: Colors.grey[300],
+          child: snapshot.hasData && snapshot.data != null
+              ? ClipOval(
+                  child: Image.memory(
+                    snapshot.data!,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                    gaplessPlayback: true, // Smooth image updates
+                  ),
+                )
+              : const Icon(Icons.person, size: 50, color: Colors.grey),
+        );
+      },
+    );
+  }
+}
+
+// Contact Details Widget
+class _ContactDetails extends StatelessWidget {
+  final Contact contact;
+
+  const _ContactDetails({Key? key, required this.contact}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (contact.phones.isNotEmpty)
+          _DetailRow(icon: Icons.phone, text: contact.phones.first.number),
+        if (contact.emails.isNotEmpty)
+          _DetailRow(icon: Icons.email, text: contact.emails.first.address),
+      ],
+    );
+  }
+}
+
+// Single Detail Row Widget
+class _DetailRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _DetailRow({Key? key, required this.icon, required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 22, color: Colors.blueGrey),
+          const SizedBox(width: 10),
+          Text(text, style: const TextStyle(fontSize: 16)),
+        ],
+      ),
+    );
+  }
+}
+
+// Action Button Widget
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onPressed;
+
+  const _ActionButton(
+      {Key? key,
+      required this.icon,
+      required this.label,
+      required this.color,
+      required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, color: Colors.white),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        backgroundColor: color,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

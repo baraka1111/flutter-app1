@@ -2,6 +2,7 @@ import 'package:fast_contacts/fast_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/contact.dart';
 import 'package:test_app/home.dart';
+import 'package:test_app/profile.dart';
 import 'package:test_app/tasks.dart';
 
 class TabScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class TabScreen extends StatelessWidget {
           children: [
             HomePage(),
             MyTasksScreen(),
-            Center(child: Text("👤 Profile Page")),
+            ProfileInfoScreen(),
             ContactScreen(),
           ],
         ),
