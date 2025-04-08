@@ -1,13 +1,14 @@
-import 'package:fast_contacts/fast_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/contact.dart';
 import 'package:test_app/home.dart';
 import 'package:test_app/profile.dart';
 import 'package:test_app/provider/about.dart';
 import 'package:test_app/provider/help.dart';
+import 'package:test_app/provider/login.dart';
+import 'package:test_app/provider/moresettings.dart';
+import 'package:test_app/provider/my_tasks_screen.dart';
 import 'package:test_app/provider/settings.dart';
-import 'package:test_app/tasks.dart';
-
+import 'package:test_app/provider/topic.dart';
 class TabScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -42,6 +43,15 @@ class TabScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => AboutScreen()),
                   );
+                } else if (value =='log in') {
+                  Navigator.push(context, 
+                  MaterialPageRoute(builder: (context) => loginScreen()));
+                } else if (value =='more settings') {
+                  Navigator.push(context, 
+                  MaterialPageRoute(builder: (context) => MyApp()));
+                } else if (value =='Topic') {
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TopicScreen()));
                 }
               },
               itemBuilder: (BuildContext context) {
@@ -49,6 +59,9 @@ class TabScreen extends StatelessWidget {
                   PopupMenuItem(value: 'settings', child: Text('Settings')),
                   PopupMenuItem(value: 'help', child: Text('Help')),
                   PopupMenuItem(value: 'about', child: Text('About This App')),
+                  PopupMenuItem(value: 'more settings', child: Text('More Settings')),
+                  PopupMenuItem(value: 'log in', child: Text('Log in')),
+                  PopupMenuItem(value: 'Topic', child: Text('Topic'))
                 ];
               },
             ),

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatefulWidget {
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
 
-class _SettingsScreenState extends State<SettingsScreen> {
   void _logoutDialog() {
+    // ignore: prefer_typing_uninitialized_variables
+    var context2;
     showDialog(
-      context: context,
       builder: (context) {
         return AlertDialog(
           title: Text("Log Out"),
@@ -24,7 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         );
-      },
+      }, context: context2,
     );
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_app/home.dart';
 import 'package:test_app/provider/todo_provider.dart';
 import 'package:test_app/tab_screen.dart';
 
@@ -16,6 +15,10 @@ void main() {
   );
 
   print(1 * 8);
+}
+
+extension on TodoProvider {
+  loadTodos() {}
 }
 
 class MyApp extends StatelessWidget {

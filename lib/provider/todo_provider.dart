@@ -1,42 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/model/todo_model.dart';
-import '../db/todo_db.dart';
+import 'todo_model.dart';
 
-class TodoProvider with ChangeNotifier {
-  List<Todo> _todos = [];
-  List<Todo> get todos => _todos;
+class TodoProvider extends ChangeNotifier {
+  List<TodoItem> _todos = [];
 
-  // Load todos from database
-  Future<void> loadTodos() async {
-    _todos = await TodoDB.getTodos();
+  List<TodoItem> get todos => _todos;
+
+  void addTodo(TodoItem todo) {
+    _todos.add(todo);
     notifyListeners();
   }
 
-  // Add a new todo
-  Future<void> addTodo(String title, String description) async {
-    Todo newTodo = Todo(title: title, description: description);
-    await TodoDB.insertTodo(newTodo);
-    await loadTodos();
+  void updateTodo(TodoItem updatedTodo) {
+    int index = _todos.indexWhere((todo) => todo.id == updatedTodo.id);
+    if (index != -1) {
+      _todos[index] = updatedTodo;
+      notifyListeners();
+    }
   }
 
-  // Update an existing todo
-  Future<void> updateTodo(Todo todo, String newTitle, String newDescription) async {
-    todo.title = newTitle;
-    todo.description = newDescription;
-    await TodoDB.updateTodo(todo);
-    await loadTodos();
+  void deleteTodo(int id) {
+    _todos.removeWhere((todo) => todo.id == id);
+    notifyListeners();
   }
 
-  // Toggle completion status
-  Future<void> toggleTodoStatus(Todo todo) async {
+  void toggleTodoStatus(TodoItem todo) {
     todo.isDone = !todo.isDone;
-    await TodoDB.updateTodo(todo);
-    await loadTodos();
-  }
-
-  // Delete a todo
-  Future<void> deleteTodo(int id) async {
-    await TodoDB.deleteTodo(id);
-    await loadTodos();
+    notifyListeners();
   }
 }
