@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/profile.dart';
-import 'package:test_app/tab_screen.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -9,7 +7,7 @@ class HomePage extends StatelessWidget {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: double.infinity,
-        color: Colors.blue,
+        color: Colors.red,
         child: Column(
           children: [
             SizedBox(

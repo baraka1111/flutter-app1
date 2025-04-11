@@ -2,7 +2,6 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 class loginScreen extends StatefulWidget{
@@ -12,8 +11,7 @@ class loginScreen extends StatefulWidget{
  class _loginScreenState extends State<loginScreen> {
   File? _image;
   String _name = "John Doe";
-  String _email = "johndoe@example.com";
-  String _phone = "+123 456 7890";
+  String _password = "123 456 7890";
 
   Future<void> _pickImage() async {
     final pickedFile =
@@ -31,10 +29,8 @@ class loginScreen extends StatefulWidget{
       builder: (context) {
         TextEditingController nameController =
             TextEditingController(text: _name);
-        TextEditingController emailController =
-            TextEditingController(text: _email);
-        TextEditingController phoneController =
-            TextEditingController(text: _phone);
+        TextEditingController passwordController =
+            TextEditingController(text: _password);
 
         return AlertDialog(
           title: Text("Create Profile"),
@@ -43,13 +39,10 @@ class loginScreen extends StatefulWidget{
             children: [
               TextField(
                   controller: nameController,
-                  decoration: InputDecoration(labelText: "Name")),
+                  decoration: InputDecoration(labelText: "Username")),
               TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(labelText: "Email")),
-              TextField(
-                  controller: phoneController,
-                  decoration: InputDecoration(labelText: "Phone")),
+                  controller: passwordController,
+                  decoration: InputDecoration(labelText: "Password")),
             ],
           ),
           actions: [
@@ -59,8 +52,7 @@ class loginScreen extends StatefulWidget{
               onPressed: () {
                 setState(() {
                   _name = nameController.text;
-                  _email = emailController.text;
-                  _phone = phoneController.text;
+                  _password = passwordController.text;
                 });
                 Navigator.pop(context);
               },
@@ -107,9 +99,8 @@ class loginScreen extends StatefulWidget{
             SizedBox(height: 20),
 
             // User Details
-            _buildDetail("Name", _name),
-            _buildDetail("Email", _email),
-            _buildDetail("Phone", _phone),
+            _buildDetail("Userame", _name),
+            _buildDetail("password", _password),
 
             SizedBox(height: 20),
             ElevatedButton.icon(
